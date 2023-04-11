@@ -9,6 +9,7 @@ class Translator {
         const wordsArray = {...americanOnly, ...americanToBritishSpelling, ...americanToBritishTitles}
         translated = this.translate(text, wordsArray)
         translated = this.time(translated, "US")
+        translated = this.titles(translated, americanToBritishTitles)
         return translated
     }
     GBToUS(text){
@@ -54,6 +55,21 @@ class Translator {
         return text
     }
     translate(text, wordsArray){
+        let regex
+        for (const original in wordsArray) {
+            regex = new RegExp(`\\b${original}\\b`, "gi");
+            text = text.replace(regex, function (match){
+                let newWord = wordsArray[original]
+                
+                if (match[0]===match[0].toUpperCase()){
+                    newWord = newWord[0].toUpperCase() + newWord.slice(1)
+                }
+                return '<span class="highlight">' + newWord + '</span>';
+            })
+          }
+        return text;
+    }
+    titles(text, wordsArray){
         let regex
         for (const original in wordsArray) {
             regex = new RegExp(`${original}`, "gi");
